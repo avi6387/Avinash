@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+      <style>
+        body {
+          margin: 0;
+          padding: 20px;
+        }
+    
+        .container-wrapper {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+    
+        .container {
+          width: 100%;
+          max-width: 300px;
+          min-height: 300px;
+          border: 1px solid #ccc;
+          padding: 10px;
+          margin: 10px;
+        }
+    
+        .item {
+          background-color: #f1f1f1;
+          padding: 5px;
+          margin-bottom: 5px;
+          cursor: move;
+        }
+    
+        .item.dragging {
+          opacity: 0.5;
+        }
+    
+        .success-message {
+          color: green;
+          margin-top: 10px;
+        }
+    
+        @media (min-width: 768px) {
+          .container {
+            width: 45%;
+          }
+        }
+    
+        @media (min-width: 1200px) {
+          .container {
+            width: 30%;
+          }
+        }
+      </style>
+      </head>
+    <body>
+      <div class="container-wrapper">
+        <div class="container">
+          <div class="item" draggable="true">Item 1</div>
+          <div class="item" draggable="true">Item 2</div>
+          <div class="item" draggable="true">Item 3</div>
+          <div class="item" draggable="true">Item 4</div>
+        </div>
+        <div class="container" id="second-container"></div>
+      </div>
+      <button onclick="resetContainers()">Reset</button>
+      <script>
+        var draggedItem = null;
+
+function handleDragStart(e) {
+  draggedItem = this;
+  this.classList.add('dragging');
+}
+
+function handleDragEnd(e) {
+  this.classList.remove('dragging');
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  if (draggedItem) {
+    this.appendChild(draggedItem);
+    draggedItem = null;
+    showMessage('Item dropped successfully!');
+  }
+}
+
+function resetContainers() {
+  var firstContainer = document.querySelector('.container');
+  var secondContainer = document.getElementById('second-container');
+  secondContainer.innerHTML = '';
+  firstContainer.innerHTML = `
+    <div class="item" draggable="true">Item 1</div>
+    <div class="item" draggable="true">Item 2</div>
+    <div class="item" draggable="true">Item 3</div>
+    <div class="item" draggable="true">Item 4</div>
+  `;
+}
+
+function showMessage(message) {
+  var messageElement = document.createElement('div');
+  messageElement.className = 'success-message';
+  messageElement.textContent = message;
+  document.body.appendChild(messageElement);
+  setTimeout(function() {
+    messageElement.remove();
+  }, 3000);
+}
+
+var items = document.querySelectorAll('.item');
+items.forEach(function(item) {
+  item.addEventListener('dragstart', handleDragStart, false);
+  item.addEventListener('dragend', handleDragEnd, false);
+});
+
+var containers = document.querySelectorAll('.container');
+containers.forEach(function(container) {
+  container.addEventListener('dragover', handleDragOver, false);
+  container.addEventListener('drop', handleDrop, false);
+});
+      </script>
+    </body>
+    </html>
